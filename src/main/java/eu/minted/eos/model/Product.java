@@ -36,5 +36,8 @@ public class Product {
     @NotBlank(message = "Description cannot be empty")
     private String description;
 
+    @Column(length = 1024)
+    private String imageUrl;
+
 
 }
