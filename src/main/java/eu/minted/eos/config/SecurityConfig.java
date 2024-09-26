@@ -1,5 +1,7 @@
 package eu.minted.eos.config;
 
+import eu.minted.eos.provider.CustomAuthenticationProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,6 +14,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Autowired
+    private CustomAuthenticationProvider customAuthenticationProvider;
+
     @Bean
     public BCryptPasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -19,11 +24,15 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http
+                .authenticationProvider(customAuthenticationProvider)
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeRequests(authorize -> authorize
                         .requestMatchers("/", "/home", "/register", "/login").permitAll()
-                        .anyRequest().authenticated()).formLogin(form -> form.loginPage("/login")
-                        .defaultSuccessUrl("/dashboard", true)
+                        .anyRequest().authenticated()).formLogin(form -> form
+                        .loginPage("/login")
+                        .failureUrl("/login?error=true")
+                        .defaultSuccessUrl("/dashboard/user", true)
                         .permitAll())
                 .logout(logout->logout.permitAll());
         return http.build();
