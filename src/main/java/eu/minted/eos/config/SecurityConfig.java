@@ -4,6 +4,7 @@ import eu.minted.eos.provider.CustomAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -14,8 +15,13 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final CustomAuthenticationProvider customAuthenticationProvider;
+
     @Autowired
-    private CustomAuthenticationProvider customAuthenticationProvider;
+    public SecurityConfig(@Lazy CustomAuthenticationProvider customAuthenticationProvider) {
+        this.customAuthenticationProvider = customAuthenticationProvider;
+    }
+
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder(){
@@ -34,7 +40,7 @@ public class SecurityConfig {
                         .failureUrl("/login?error=true")
                         .defaultSuccessUrl("/dashboard/user", true)
                         .permitAll())
-                .logout(logout->logout.permitAll());
+                .logout(logout -> logout.permitAll());
         return http.build();
     }
 }

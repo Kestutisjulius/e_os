@@ -3,6 +3,8 @@ package eu.minted.eos.service;
 import eu.minted.eos.model.User;
 import eu.minted.eos.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,5 +20,7 @@ public interface UserService {
     Optional<User> getUserByUsername(String username);
     List<User> getAllUsers();
     User updateUser(User user);
+    UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
+
     void deleteUser(Long id);
 }

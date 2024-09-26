@@ -40,6 +40,12 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<Order> getOrdersByUserId(Long userId) {
+        return orderRepository.getOrdersByUserId(userId);
+    }
+
+    @Override
     @Transactional
     public Order updateOrder(Order order) {
         return orderRepository.save(order);

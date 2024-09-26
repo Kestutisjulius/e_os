@@ -1,7 +1,9 @@
 package eu.minted.eos.controller;
 
+import eu.minted.eos.model.Order;
 import eu.minted.eos.model.User;
 import eu.minted.eos.service.OrderService;
+import eu.minted.eos.service.OrderServiceImpl;
 import eu.minted.eos.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -19,6 +23,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    OrderServiceImpl orderService;
 
 
     @GetMapping("/login")
@@ -42,8 +49,30 @@ public class UserController {
     @GetMapping("/dashboard/user")
     public String userDashboard(Model model, Authentication authentication) {
         String username = authentication.getName();
-        Optional<User> user = userService.getUserByUsername(username);
-        model.addAttribute("user", user);
-        return "dashboard/user";
+        Optional<User> userOptional = userService.getUserByUsername(username);
+        System.out.println(username);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            model.addAttribute("user", user);
+
+            // Retrieve orders, handle if orders are null or empty
+            List<Order> orders = orderService.getOrdersByUserId(user.getId());
+            if (orders == null || orders.isEmpty()) {
+                model.addAttribute("orders", Collections.emptyList());  // Pass an empty list
+                model.addAttribute("noOrdersMessage", "You have no orders yet.");
+            } else {
+                model.addAttribute("orders", orders);
+            }
+
+            return "dashboard/user";
+        } else {
+            return "error/404";  // Handle user not found case
+        }
     }
+
+
+
+
+
+
 }
