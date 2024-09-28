@@ -10,6 +10,9 @@ public interface ProductService {
     Optional<Product>getProductById(Long id);
     Optional<Product>getProductByName(String name);
     List<Product>getAllProducts();
+    List<Product>getProductsByUserId(Long userId);
     Product updateProduct(Product product);
+
+    List<Product>getRandomProducts(int count);
     void deleteProduct(Long id);
 }

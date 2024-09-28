@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ProductServiceImpl implements ProductService{
+public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductRepository productRepository;
@@ -23,31 +23,44 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Product> getProductById(Long id){
+    public Optional<Product> getProductById(Long id) {
         return productRepository.findById(id);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Product> getProductByName(String name){
+    public Optional<Product> getProductByName(String name) {
         return productRepository.findByName(name);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Product> getAllProducts(){
+    public List<Product> getAllProducts() {
         return productRepository.findAll();
-
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Product> getProductsByUserId(Long userId) {
+        return productRepository.findByUserId(userId);
+    }
+
     @Override
     @Transactional
     public Product updateProduct(Product product) {
         return productRepository.save(product);
-
     }
+
     @Override
     @Transactional
-    public void deleteProduct(Long id){
+    public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Product> getRandomProducts(int i) {
+        return productRepository.findRandomProducts(i);
+    }
 }
+

@@ -33,6 +33,14 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true, length = 50)
     private String username;
 
+    @NotBlank(message = "Firstname is required")
+    @Column(nullable = false, length = 50)
+    private String firstName;
+
+    @NotBlank(message = "Lastname is required")
+    @Column(nullable = false, length = 50)
+    private String lastName;
+
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters long")
     @Column(nullable = false)
@@ -56,10 +64,10 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // If a single role is used
+        // single role is used
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.name()));
 
-        // If multiple roles or permissions were used:
+        // multiple roles or permissions were used:
         // return roles.stream()
         //             .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
         //             .collect(Collectors.toList());
