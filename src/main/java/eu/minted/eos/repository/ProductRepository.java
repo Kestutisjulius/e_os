@@ -1,6 +1,8 @@
 package eu.minted.eos.repository;
 
 import eu.minted.eos.model.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,6 +16,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
    Optional<Product> findByName(String name);
    List<Product> findByUserId(Long userId);
+
+   Page<Product> findAll(Pageable pageable);
 
    @Query(value = "SELECT * FROM products ORDER BY RAND() LIMIT :limit", nativeQuery = true)
    List<Product> findRandomProducts(@Param("limit") int limit);
