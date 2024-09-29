@@ -16,7 +16,7 @@ public class DashboardController {
     @Autowired
     private ProductServiceImpl productService;
 
-    @GetMapping("/")
+    @GetMapping("/dashboard/index")
     public String index(Model model) {
         return "dashboard/index";
     }

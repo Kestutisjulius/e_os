@@ -112,6 +112,38 @@ public class UserController {
         }
     }
 
+    @GetMapping("/dashboard/userorders")
+    public String userOrders(Model model, Authentication authentication) {
+        String username = authentication.getName();
+        Optional<User> userOptional = userService.getUserByUsername(username);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            List<Order> orders = orderService.getOrdersByUserId(user.getId());
+
+            model.addAttribute("orders", orders);
+            return "dashboard/userorders";
+        } else {
+            return "error/404"; // jei vartotojas nerastas, rodyti klaidos puslapį
+        }
+    }
+
+    @GetMapping("/dashboard/userproducts")
+    public String userProducts(Model model, Authentication authentication) {
+        String username = authentication.getName();
+        Optional<User> userOptional = userService.getUserByUsername(username);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            List<Product> products = productService.getProductsByUserId(user.getId());
+
+            model.addAttribute("products", products);
+            return "dashboard/userproducts";
+        } else {
+            return "error/404"; // jei vartotojas nerastas, rodyti klaidos puslapį
+        }
+    }
+
 
 
 

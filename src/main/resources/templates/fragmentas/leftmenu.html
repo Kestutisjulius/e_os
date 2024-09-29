@@ -1,8 +1,10 @@
 <!-- src/main/resources/templates/fragmentas/leftmenu.html -->
-<div class="list-group">
-  <a href="#" class="list-group-item list-group-item-action active" aria-current="true">E-parduotuvė</a>
-  <a th:href="@{/dashboard/user}" class="list-group-item list-group-item-action">Vartotojo profilis</a>
-  <a th:href="@{/dashboard/products}" class="list-group-item list-group-item-action">Produktai</a>
-  <a th:href="@{/dashboard/orders}" class="list-group-item list-group-item-action">Užsakymai</a>
-  <a th:href="@{/dashboard/shop}" class="list-group-item list-group-item-action">E-parduotuvės galimybės</a>
+<div th:fragment="leftmenu">
+  <div class="list-group">
+    <a th:href="@{/dashboard/index}" class="list-group-item list-group-item-action">E-parduotuvė</a>
+    <a th:href="@{/dashboard/user}" class="list-group-item list-group-item-action">Vartotojo profilis</a>
+    <a th:href="@{/dashboard/userproducts}" class="list-group-item list-group-item-action">Produktai</a>
+    <a th:href="@{/dashboard/userorders}" class="list-group-item list-group-item-action">Užsakymai</a>
+    <a th:href="@{/shop/index}" class="list-group-item list-group-item-action">E-parduotuvės galimybės</a>
+  </div>
 </div>
