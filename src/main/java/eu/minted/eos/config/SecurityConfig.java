@@ -32,7 +32,9 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authenticationProvider(customAuthenticationProvider)
-                .csrf(AbstractHttpConfigurer::disable)
+//                .csrf(AbstractHttpConfigurer::disable)
+
+
                 .authorizeRequests(authorize -> authorize
                         .requestMatchers("/", "/home", "/register", "/login").permitAll()
                         .anyRequest().authenticated()).formLogin(form -> form
@@ -40,7 +42,12 @@ public class SecurityConfig {
                         .failureUrl("/login?error=true")
                         .defaultSuccessUrl("/dashboard/user", true)
                         .permitAll())
-                .logout(logout -> logout.permitAll());
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll());
         return http.build();
     }
 }

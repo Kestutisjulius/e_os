@@ -1,10 +1,13 @@
 <!-- src/main/resources/templates/fragmentas/leftmenu.html -->
-<div th:fragment="leftmenu">
-  <div class="list-group">
-    <a th:href="@{/dashboard/index}" class="list-group-item list-group-item-action">E-parduotuvė</a>
-    <a th:href="@{/dashboard/user}" class="list-group-item list-group-item-action">Vartotojo profilis</a>
-    <a th:href="@{/dashboard/userproducts}" class="list-group-item list-group-item-action">Produktai</a>
-    <a th:href="@{/dashboard/userorders}" class="list-group-item list-group-item-action">Užsakymai</a>
-    <a th:href="@{/shop/index}" class="list-group-item list-group-item-action">E-parduotuvės galimybės</a>
-  </div>
+<div class="list-group" th:fragment="leftmenu">
+  <a th:href="@{/dashboard/index}" class="list-group-item list-group-item-action">E-parduotuvė</a>
+  <a th:href="@{/dashboard/user}" class="list-group-item list-group-item-action">Vartotojo profilis</a>
+  <a th:href="@{/dashboard/userproducts}" class="list-group-item list-group-item-action">Produktai</a>
+  <a th:href="@{/dashboard/userorders}" class="list-group-item list-group-item-action">Užsakymai</a>
+
+  <!-- Atsijungimo forma -->
+  <form th:action="@{/logout}" method="post" class="d-inline mt-2">
+    <button type="submit" class="btn btn-danger list-group-item list-group-item-danger">Atsijungti</button>
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/> <!-- CSRF žetonas -->
+  </form>
 </div>

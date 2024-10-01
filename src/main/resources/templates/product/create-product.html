@@ -26,6 +26,7 @@
 
             <!-- Produktų kūrimo forma -->
             <form th:action="@{/product/store}" method="post" enctype="multipart/form-data">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <div class="mb-3">
                     <label for="name" class="form-label">Pavadinimas</label>
                     <input type="text" class="form-control" id="name" name="name" required>
