@@ -5,6 +5,18 @@
   <a th:href="@{/dashboard/userproducts}" class="list-group-item list-group-item-action">Produktai</a>
   <a th:href="@{/dashboard/userorders}" class="list-group-item list-group-item-action">Užsakymai</a>
 
+  <!-- Krepšelio ikona -->
+  <a href="#" th:href="@{/cart}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+    <span>Krepšelis</span>
+    <!-- Krepšelio ikona su prekių skaičiumi -->
+    <div class="d-flex align-items-center">
+      <i class="bi bi-cart-fill" style="font-size: 1.5rem;"></i> <!-- Bootstrap ikona -->
+      <span class="badge bg-secondary ms-2" th:text="${cartItemCount}">0</span> <!-- Prekių kiekis krepšelyje -->
+    </div>
+  </a>
+
+
+
   <!-- Atsijungimo forma -->
   <form th:action="@{/logout}" method="post" class="d-inline mt-2">
     <button type="submit" class="btn btn-danger list-group-item list-group-item-danger">Atsijungti</button>

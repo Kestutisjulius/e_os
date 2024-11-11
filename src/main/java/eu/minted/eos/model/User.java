@@ -54,6 +54,13 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true, length = 50)
     private String email;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, optional = false)
+    private Wallet wallet;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id", referencedColumnName = "id")
+    private Address address;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Product> products = new HashSet<>();
 
@@ -64,13 +71,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // single role is used
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.name()));
-
-        // multiple roles or permissions were used:
-        // return roles.stream()
-        //             .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
-        //             .collect(Collectors.toList());
+            return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
 

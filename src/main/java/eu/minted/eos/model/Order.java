@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Map;
 
 @Entity
 @Table(name = "orders")
@@ -25,13 +26,12 @@ public class Order {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false)
-    private Product product;
-
-    @NotNull(message = "Quantity cannot be null")
-    @Min(value = 1, message = "Quantity must be at least 1")
-    private int quantity;
+    // Laukas, skirtas saugoti krepšelio produktus ir jų kiekius
+    @ElementCollection
+    @CollectionTable(name = "order_products", joinColumns = @JoinColumn(name = "order_id"))
+    @MapKeyColumn(name = "product_id")
+    @Column(name = "quantity")
+    private Map<Long, Integer> productQuantities;
 
     @NotNull(message = "Order date cannot be null")
     @Temporal(TemporalType.TIMESTAMP)
@@ -44,10 +44,13 @@ public class Order {
     @Column(length = 10, nullable = false)
     private OrderStatus status;
 
-    @Embedded
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "delivery_address_id", referencedColumnName = "id")
     private Address deliveryAddress;
 
     @Column(nullable = false, unique = true, length = 64)
     private String orderNumber;
+
+
 }
 

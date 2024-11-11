@@ -4,6 +4,19 @@
   <meta charset="UTF-8">
   <title>Jūsų Užsakymai</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .details {
+      display: none;
+    }
+    .details.active {
+      display: block;
+    }
+    .toggle-btn {
+      cursor: pointer;
+      color: #000;
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
 <div class="container mt-3">
@@ -12,40 +25,50 @@
     <div class="col-md-3">
       <div th:replace="~{fragmentas/leftmenu :: leftmenu}"></div>
     </div>
-
     <!-- Dešinysis turinys -->
     <div class="col-md-9">
       <h3>Jūsų Užsakymai</h3>
       <!-- Jei nėra užsakymų -->
-      <div th:if="${orders.empty}">
-        <p>Jūs dar neturite užsakymų.</p>
-      </div>
-
-      <!-- Jei yra užsakymų -->
-      <div th:if="${not #lists.isEmpty(orders)}">
-        <table class="table">
-          <thead>
-          <tr>
-            <th>Užsakymo ID</th>
-            <th>Data</th>
-            <th>Suma</th>
-            <th>Statusas</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr th:each="order : ${orders}">
-            <td th:text="${order.id}"></td>
-            <td th:text="${#dates.format(order.date, 'dd-MM-yyyy')}"></td>
-            <td th:text="${order.amount}"></td>
-            <td th:text="${order.status}"></td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
+      <p th:if="${noOrdersMessage}" th:text="${noOrdersMessage}" class="alert alert-info"></p>
+      <!-- Užsakymų sąrašas -->
+      <ul th:if="${orders}">
+        <li th:each="order : ${orders}" class="list-group-item">
+          <h4>Užsakymo numeris: <span th:text="${order.orderNumber}"></span></h4>
+          <p>Kaina: <span th:text="${order.totalAmount}"></span> EUR  <span style="color: orangered"> | Statusas:</span> <span th:text="${order.status}"></span> <span style="color: orangered"> | Data:</span> <span th:text="${#dates.format(order.orderDate, 'dd-MM-yyyy')}"></span></p>
+          <button class="btn btn-primary toggle-btn">Rodyti detales</button>
+          <div class="details">
+            <h5>Produktai Krepšelyje:</h5>
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <th>Produkto Pavadinimas</th>
+                <th>Kiekis</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr th:each="entry : ${order.productQuantities}">
+                <td th:text="${productMap[entry.key].name}">Produkto Pavadinimas</td>
+                <td th:text="${entry.value}">Kiekis</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('.toggle-btn');
+    buttons.forEach(button => {
+      button.addEventListener('click', function() {
+        const details = this.nextElementSibling;
+        details.classList.toggle('active');
+      });
+    });
+  });
+</script>
 </body>
 </html>

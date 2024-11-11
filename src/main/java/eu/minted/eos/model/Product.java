@@ -33,6 +33,9 @@ public class Product {
     @Min(value = 0, message = "Quantity must be non-negative")
     private int quantity;
 
+    @Column(length = 30)
+    private String unit;
+
     @NotBlank(message = "Description cannot be empty")
     private String description;
 
@@ -42,6 +45,14 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "pickup_address_id", referencedColumnName = "id")
+    private Address pickupAddress;
 
 
 }

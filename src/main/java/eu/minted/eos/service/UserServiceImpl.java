@@ -1,5 +1,6 @@
 package eu.minted.eos.service;
 
+import eu.minted.eos.model.Role;
 import eu.minted.eos.model.User;
 import eu.minted.eos.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User registerUser(User user) {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
+        Role role =Role.USER;
+        user.setRole(role);
         user.setPassword(encodedPassword);
         return userRepository.save(user);
     }
