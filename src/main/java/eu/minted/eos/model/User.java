@@ -54,6 +54,12 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true, length = 50)
     private String email;
 
+    @Column(unique = true, length = 16)
+    private String uniqueCode;  // asmens arba im.k.
+
+    @Lob
+    private byte[] photo;  // foto arba logo, gali būti asmeninė simbolika
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, optional = false)
     private Wallet wallet;
 

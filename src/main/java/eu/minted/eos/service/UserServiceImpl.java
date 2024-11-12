@@ -13,8 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.multipart.MultipartFile;
 
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -34,11 +36,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User registerUser(User user) {
+    public User registerUser(User user, MultipartFile photo) {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         Role role =Role.USER;
         user.setRole(role);
         user.setPassword(encodedPassword);
+
+        // Jei nuotrauka buvo pateikta, įrašome ją
+        if (photo != null && !photo.isEmpty()) {
+            try {
+                user.setPhoto(photo.getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException("Klaida įkeliant nuotrauką", e);
+            }
+        }
+
         return userRepository.save(user);
     }
 

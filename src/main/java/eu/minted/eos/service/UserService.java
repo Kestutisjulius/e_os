@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +15,7 @@ import java.util.Optional;
 @Service
 public interface UserService {
 
-    User registerUser(User user);
+    User registerUser(User user, MultipartFile photo);
     Optional<User>getUserById(Long id);
     Optional<User> getUserByEmail(String email);
     Optional<User> getUserByUsername(String username);

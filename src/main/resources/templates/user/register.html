@@ -48,6 +48,19 @@
               <div th:if="${#fields.hasErrors('lastName')}" class="text-danger" th:errors="*{lastName}">Error</div>
             </div>
 
+            <!-- Pardavėjo kodas (privalomas, jei vartotojas nori būti pardavėju) -->
+            <div  class="mb-3">
+              <label for="uniqueCode">Unikalus Pardavėjo/Įmonės Kodas</label>
+              <input type="text" id="uniqueCode" th:field="*{uniqueCode}" placeholder="Pardavėjo kodas" required>
+              <div th:if="${#fields.hasErrors('uniqueCode')}" class="text-danger" th:errors="*{uniqueCode}">Error</div>
+            </div>
+
+            <!-- Profilio nuotrauka -->
+            <div>
+              <label for="photo">Profilio Nuotrauka (pasirinktinai)</label>
+              <input type="file" id="photo" th:field="*{photo}" accept="image/*">
+            </div>
+
             <!-- Email -->
             <div class="mb-3">
               <label for="email" class="form-label">Email</label>

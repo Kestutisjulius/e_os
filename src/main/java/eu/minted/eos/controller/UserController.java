@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.util.*;
 
 @Slf4j
@@ -66,8 +68,9 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String createUser(@ModelAttribute("user") @Valid User user, BindingResult result,
-                             Model model, RedirectAttributes redirectAttributes) {
+    public String createUser(@ModelAttribute("user") @Valid User user,
+                             @RequestParam(value = "photo", required = false) MultipartFile photo,
+                             BindingResult result, Model model, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             return "user/register"; // Jei yra klaidų, grįžtame į registracijos formą
         }
@@ -78,8 +81,18 @@ public class UserController {
             return "user/register";
         }
 
+        // Tvarkome nuotrauką, jei ji pateikta
+        if (photo != null && !photo.isEmpty()) {
+            try {
+                user.setPhoto(photo.getBytes());
+            } catch (IOException e) {
+                model.addAttribute("error", "Failed to upload photo.");
+                return "user/register";
+            }
+        }
+
         // Išsaugome vartotoją
-        userService.registerUser(user);
+        userService.registerUser(user, photo);
 
         // Sukuriame vartotojui piniginę
         walletService.createWalletForUser(user.getId());
@@ -97,8 +110,10 @@ public class UserController {
                                 @RequestParam("email") String email,
                                 @RequestParam("password") String password,
                                 @RequestParam("confirmPassword") String confirmPassword,
+                                @RequestParam(value = "photo", required = false) MultipartFile photo,
                                 Authentication authentication,
-                                Model model) {
+                                Model model,
+                                RedirectAttributes redirectAttributes) {
         // Gauti dabartinį vartotoją iš autentifikacijos objekto
         String currentUsername = authentication.getName();
         log.info("current username: " + currentUsername);
@@ -128,6 +143,16 @@ public class UserController {
             return "dashboard/user";  // Grąžina į profilį su klaidos pranešimu
         }
 
+        if (photo != null && !photo.isEmpty()) {
+            try {
+                currentUser.setPhoto(photo.getBytes());
+            } catch (IOException e) {
+                log.error("Klaida įkeliant paveikslėlį", e);
+                redirectAttributes.addFlashAttribute("errorMessage", "Nepavyko įkelti paveikslėlio.");
+                return "redirect:/dashboard/user";
+            }
+        }
+
         // Atnaujinti vartotojo duomenis duomenų bazėje
         userService.updateUser(currentUser);
 
@@ -147,6 +172,14 @@ public class UserController {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             model.addAttribute("user", user);
+
+            // Konvertuojame nuotrauką į Base64, jei ji egzistuoja
+            if (user.getPhoto() != null) {
+                String base64Photo = Base64.getEncoder().encodeToString(user.getPhoto());
+                model.addAttribute("base64Photo", base64Photo);
+            } else {
+                model.addAttribute("base64Photo", null);
+            }
 
             // Pridedame krepšelio elementų skaičių į modelį
             int cartItemCount = cartService.getCartItemCount(user);
